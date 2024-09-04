@@ -3,7 +3,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwt from 'jsonwebtoken';
 import UserRepository from '../users/user.repository.js';
-import { callBackUrl, googleClientId, googleClientSecret, jwtSecret } from '../../core/common/constants/env.constants.js';
+import { backendBaseUrl, callBackUrl, googleClientId, googleClientSecret, jwtSecret } from '../../core/common/constants/env.constants.js';
 
 // Define your OAuth2 credentials
 const clientID = googleClientId;
@@ -22,7 +22,7 @@ const userRepository = new UserRepository();
 passport.use(new GoogleStrategy({
     clientID: clientID,
     clientSecret: clientSecret,
-    callbackURL: callbackURL
+    callbackURL: `${backendBaseUrl}${callbackURL}`
   },
   /**
    * Google OAuth2 strategy callback

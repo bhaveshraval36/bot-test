@@ -17,4 +17,5 @@ export const jwtSecret = getEnv('JWT_SECRET');
 export const nodeEnv = getEnv('NODE_ENV');
 
 export const frontendBaseUrl = getEnv('FRONTEND_BASE_URL');
+export const backendBaseUrl = getEnv('BACKEND_BASE_URL');
 export const redirectPath = getEnv('REDIRECT_PATH');
