@@ -1,0 +1,19 @@
+PORT=3001
+DB_HOST=sql12.freemysqlhosting.net
+DB_PORT=3306
+DB_USERNAME=sql12728776
+DB_PASSWORD=mGNEFXlfXT
+DB_DATABASE=sql12728776
+
+AI_API_URL=https://api-query-pinecone.onrender.com
+
+
+GOOGLE_CLIENT_ID=1060285854006-jcvklv5omj1mvetbrho0g40n1cmeit5c.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+GOOGLE_CALLBACK_URL=/api/auth/google/callback
+SESSION_SECRET=your_session_secret
+JWT_SECRET=your_jwt_secret
+
+#  after google redirect to fronetend
+FRONTEND_BASE_URL=http://localhost:3000
+REDIRECT_PATH=/dashboard
