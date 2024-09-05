@@ -22,7 +22,11 @@ router.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
     // Set auth token in cookie
-    res.cookie('authUser', req.user);
+    res.cookie('authUser', req.user, {
+      sameSite: 'None',  // Allows cross-site cookies
+      secure: true,      // Ensures the cookie is sent only over HTTPS
+      domain: frontendBaseUrl // Set the domain to cover both frontend and backend   
+    });
     // Redirect to dashboard
     res.redirect(`${frontendBaseUrl}${redirectPath}`);
   }
