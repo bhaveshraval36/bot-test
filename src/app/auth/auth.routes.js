@@ -23,7 +23,7 @@ router.get('/auth/google/callback',
   (req, res) => {
     const isSecure = process.env.NODE_ENV === 'production';
     res.cookie('authUser', req.user, {
-      httpOnly: true,
+      httpOnly: false,
       secure: isSecure,
       sameSite: isSecure ? 'none' : 'lax',
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
