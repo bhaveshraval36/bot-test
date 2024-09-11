@@ -1,65 +1,56 @@
-import passport from 'passport';
-import cookieParser from 'cookie-parser';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import session from 'express-session';
-
-
+import passport from "passport";
+import cookieParser from "cookie-parser";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import session from "express-session";
 import express from "express";
 import dotenv from "dotenv";
 import AppModule from "./app.module.js";
 import logger from "../src/core/common/utils/logger.js";
 import bodyParser from "body-parser";
 import helmet from "helmet";
-import cors from 'cors';
-import { appPort } from "./core/common/constants/env.constants.js";
+import cors from "cors";
+import { appPort, frontendBaseUrl } from "./core/common/constants/env.constants.js";
 
 dotenv.config();
 
-/**
- * Bootstrap the application
- */
 const bootstrap = async () => {
   const app = express();
+
   // Use cookie parser middleware
   app.use(cookieParser());
-  
+
   app.use(express.json());
 
-  app.use(session({
-    secret: 'your_secret_key',
-    resave: false,
-    saveUninitialized: true
-  }));
-  
+  // Configure session
+  app.use(
+    session({
+      secret: "your_secret_key",
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      },
+    })
+  );
+
   app.use(passport.initialize());
   app.use(passport.session());
 
-
   // Configure CORS
-//const corsOptions = {
-//  origin: "https://ceewtech.xyz", // Allow requests from this origin
-//  credentials: true, // Allow cookies to be sent with requests
-//};
-	//
-// Dynamic CORS options to allow all origins
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    return callback(null, true);  // Allow all origins
-  },
-  credentials: true,  // Allow credentials (cookies) to be sent
-};
- app.use(cors(corsOptions));
+  const corsOptions = {
+    origin: frontendBaseUrl || "http://localhost:3000",
+    credentials: true,
+  };
+  app.use(cors(corsOptions));
 
-// app.use(cors());
   // Middleware
   app.use(helmet());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
 
-
-  const port = appPort || 3000;
+  const port = appPort || 3001;
 
   const appModule = new AppModule();
   await appModule.configure(app);

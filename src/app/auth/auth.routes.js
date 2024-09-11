@@ -18,24 +18,18 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
  * @access Public
  * @returns Redirects to the dashboard with an auth token cookie
  */
-router.get('/auth/google/callback', 
+router.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
-    // Set auth token in cookie
-   // res.cookie('authUser', req.user, {
-    //  sameSite: 'None',  // Allows cross-site cookies
-   //   secure: true,      // Ensures the cookie is sent only over HTTPS
-    //  domain: frontendBaseUrl // Set the domain to cover both frontend and backend   
-   // });
-	  //
-	 const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
-
+    const isSecure = process.env.NODE_ENV === 'production';
     res.cookie('authUser', req.user, {
-      httpOnly: true,    // Ensure the cookie is not accessible via JS
-      secure: isSecure,     // Set to true if using HTTPS
-      sameSite: 'None',   // Set for cross-site requests if needed
+      httpOnly: true,
+      secure: isSecure,
+      sameSite: isSecure ? 'none' : 'lax',
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      path: '/',
     });
-    res.body=req.user
+
     // Redirect to dashboard
     res.redirect(`${frontendBaseUrl}${redirectPath}`);
   }
