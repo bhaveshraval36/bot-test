@@ -1,4 +1,5 @@
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import session from 'express-session';
 
@@ -19,6 +20,9 @@ dotenv.config();
  */
 const bootstrap = async () => {
   const app = express();
+  // Use cookie parser middleware
+  app.use(cookieParser());
+  
   app.use(express.json());
 
   app.use(session({
@@ -32,12 +36,23 @@ const bootstrap = async () => {
 
 
   // Configure CORS
+//const corsOptions = {
+//  origin: "https://ceewtech.xyz", // Allow requests from this origin
+//  credentials: true, // Allow cookies to be sent with requests
+//};
+	//
+// Dynamic CORS options to allow all origins
 const corsOptions = {
-  origin: true, // Allow requests from this origin
-  credentials: true, // Allow cookies to be sent with requests
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    return callback(null, true);  // Allow all origins
+  },
+  credentials: true,  // Allow credentials (cookies) to be sent
 };
-app.use(cors(corsOptions));
+ app.use(cors(corsOptions));
 
+// app.use(cors());
   // Middleware
   app.use(helmet());
   app.use(bodyParser.json());
