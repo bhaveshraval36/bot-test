@@ -29,10 +29,15 @@ class QuestionService {
     try {
       console.log("coming here ================>", createQuestionDto);
 
+      let data = new FormData();
+     data.append('question', createQuestionDto?.question);
+     data.append('source', createQuestionDto?.source);
+     console.log("🚀 ~ QuestionService ~ createQuestion ~ data:", data)
+
       // Make the external API call
       const response = await axiosServer.post(
         "/predict",
-        { question: createQuestionDto?.question, source: createQuestionDto?.source },
+        data,
         {
           "Content-Type": "multipart/form-data", // Example of setting Content-Type dynamically
         }
@@ -56,7 +61,7 @@ class QuestionService {
         question_id: Question?.dataValues?.id,
         session_id: Question?.dataValues?.session_id,
         answer: response?.answer,
-        metadata: response?.relevant_excerpts,
+        metadata: JSON.stringify(response?.relevant_excerpts),
       }
 
       // Create the question in the repository within the transaction
